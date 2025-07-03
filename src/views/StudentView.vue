@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue'
 import StudentService from '@/services/StudentService'
 import StudentCard from '@/components/StudentCard.vue'
 
-const students = ref<Student[]>(null)
+const students = ref<Student[]>([])
 
 onMounted(() => {
   StudentService.getStudents()
