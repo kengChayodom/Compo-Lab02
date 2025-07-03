@@ -12,6 +12,7 @@ onMounted(() => {
     .get('https://my-json-server.typicode.com/kengChayodom/Compo-Lab02/db')
     .then((response) => {
       console.log(response.data)
+      events.value = response.data.events
     })
     .catch((error) => {
       console.log('There was an error!', error)
