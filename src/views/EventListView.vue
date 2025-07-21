@@ -8,7 +8,7 @@ import EventService from '@/services/EventService'
 const events = ref<Event[] | null>([])
 const totalEvents = ref(0)
 const hasNexPage = computed(() => {
-  const totalPages = Math.ceil(totalEvents.value / 2)
+  const totalPages = Math.ceil(totalEvents.value / pageSize.value)
   return page.value < totalPages
 })
 
@@ -31,6 +31,7 @@ const pageSize = computed(() => props.pageSize)
 onMounted(() => {
   watchEffect(() => {
     events.value = null
+
     EventService.getEvents(pageSize.value, page.value)
       .then((response) => {
         console.log(response.data)
@@ -62,7 +63,7 @@ onMounted(() => {
     <div class="pagination">
       <router-link
         id="page-prev"
-        :to="{ name: 'home', query: { page: page - 1 } }"
+        :to="{ name: 'home', query: { page: page - 1, pageSize: pageSize } }"
         rel="prev"
         v-if="page != 1"
       >
@@ -70,7 +71,7 @@ onMounted(() => {
       </router-link>
       <router-link
         id="page-next"
-        :to="{ name: 'home', query: { page: page + 1 } }"
+        :to="{ name: 'home', query: { page: page + 1, pageSize: pageSize } }"
         rel="next"
         v-if="hasNexPage"
       >
