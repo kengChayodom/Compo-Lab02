@@ -21,11 +21,14 @@ onMounted(() => {
       event.value = response.data
     })
     .catch((error) => {
-      router.push({
-        name: '404-resource-view',
-        params: { resource: 'event' },
-      })
-      console.error('There was an error!', error)
+      if (error.response && error.response.status === 404) {
+        router.push({
+          name: '404-resource-view',
+          params: { resource: 'event' },
+        })
+      } else {
+        router.push({ name: 'network-error-view' })
+      }
     })
 })
 </script>
