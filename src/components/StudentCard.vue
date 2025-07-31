@@ -6,25 +6,12 @@ defineProps<{
 </script>
 
 <template>
-  <div class="event-class">
-    <div class="Student-card">
-      <h2>{{ student.name }} {{ student.surname }}</h2>
+  <div class="flex justify-center">
+    <div
+      class="p-5 w-[250px] cursor-pointer border border-gray-600 mb-[18px] transition-transform duration-200 hover:scale-105 hover:shadow-md"
+    >
+      <h2 class="text-lg font-semibold mb-1">{{ student.name }} {{ student.surname }}</h2>
       <h3>{{ student.gpa }}</h3>
     </div>
   </div>
 </template>
-
-<style scoped>
-.Student-card {
-  padding: 20px;
-  width: 250px;
-  cursor: pointer;
-  border: 1px solid #39495c;
-  margin-bottom: 18px;
-}
-
-.Student-card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
-}
-</style>

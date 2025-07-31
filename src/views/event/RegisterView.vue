@@ -25,5 +25,10 @@ const register = () => {
 
 <template>
   <p>Register event here</p>
-  <button @click="register">Register</button>
+  <button
+    class="px-5 py-2 rounded-md bg-gray-600 text-white font-medium hover:bg-green-500 active:scale-95 transition"
+    @click="register"
+  >
+    Register
+  </button>
 </template>

@@ -46,22 +46,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="page-size-links">
+  <div class="flex justify-center gap-4 my-6">
     <router-link
       v-for="size in pageSizeOption"
       :key="size"
       :to="{ name: 'home', query: { page: 1, pageSize: size } }"
-      :class="{ active: pageSize === size }"
-      ><button>{{ size }} per page</button>
+    >
+      <button
+        class="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100 transition"
+        :class="{ 'bg-green-100 text-green-700 font-semibold': pageSize === size }"
+      >
+        {{ size }} per page
+      </button>
     </router-link>
   </div>
 
-  <h1>Events For Good</h1>
+  <h1 class="text-3xl">Events For Good</h1>
   <div class="flex flex-col items-center">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
-    <div class="pagination">
+    <div class="flex w-[290px] justify-between text-blue-700 font-medium">
       <router-link
-        id="page-prev"
+        class="text-left hover:underline"
         :to="{ name: 'home', query: { page: page - 1, pageSize: pageSize } }"
         rel="prev"
         v-if="page != 1"
@@ -69,7 +74,7 @@ onMounted(() => {
         &#60; Prev Page
       </router-link>
       <router-link
-        id="page-next"
+        class="text-right hover:underline"
         :to="{ name: 'home', query: { page: page + 1, pageSize: pageSize } }"
         rel="next"
         v-if="hasNexPage"
@@ -79,40 +84,7 @@ onMounted(() => {
     </div>
   </div>
 
-  <div class="category">
+  <div class="flex flex-col items-end mt-10 gap-4">
     <CategoryInfo v-for="event in events" :key="event.id" :event="event" />
   </div>
 </template>
-
-<style scoped>
-.page-size-links {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px 0;
-}
-
-.category {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.pagination {
-  display: flex;
-  width: 290px;
-}
-.pagination a {
-  flex: 1;
-  text-decoration: none;
-  color: #2c3e50;
-}
-
-#page-prev {
-  text-align: left;
-}
-
-#page-next {
-  text-align: right;
-}
-</style>

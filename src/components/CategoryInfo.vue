@@ -6,21 +6,10 @@ defineProps<{
 </script>
 
 <template>
-  <div class="CategoryInfo">
+  <div
+    class="p-5 w-[250px] cursor-pointer border border-red-500 rounded-[20%] mb-[18px] text-[10px] text-right"
+  >
     <h2>Category :{{ event.category }}</h2>
     <h2>Organizer :{{ event.organizer }}</h2>
   </div>
 </template>
-
-<style scoped>
-.CategoryInfo {
-  padding: 20px;
-  width: 250px;
-  cursor: pointer;
-  border: 1px solid red;
-  border-radius: 20%;
-  margin-bottom: 18px;
-  font-size: 10px;
-  text-align: right;
-}
-</style>
