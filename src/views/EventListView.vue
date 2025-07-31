@@ -57,7 +57,7 @@ onMounted(() => {
   </div>
 
   <h1>Events For Good</h1>
-  <div class="events">
+  <div class="flex flex-col items-center">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <div class="pagination">
       <router-link
@@ -90,12 +90,6 @@ onMounted(() => {
   justify-content: center;
   gap: 10px;
   margin: 20px 0;
-}
-
-.events {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .category {
