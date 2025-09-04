@@ -20,6 +20,12 @@ export interface Student {
   description: string
 }
 
+export interface Organization {
+  id: number
+  organizationName: string
+  address: string
+}
+
 export interface MessageState {
   message: string
 }

@@ -36,6 +36,12 @@ const { message } = storeToRefs(store)
             :to="{ name: 'students' }"
             >Students</RouterLink
           >
+          <RouterLink
+            class="font-bold text-gray-700"
+            exact-active-class="text-green-500"
+            :to="{ name: 'organizes' }"
+            >Organize</RouterLink
+          >
         </nav>
       </div>
     </header>

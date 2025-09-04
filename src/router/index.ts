@@ -11,6 +11,7 @@ import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import nProgress from 'nprogress'
 import EventService from '@/services/EventService'
 import { useEventStore } from '@/stores/event'
+import OrganizeView from '@/views/OrganizeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,10 +20,14 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: EventListView,
-      props: (route) => ({
-        page: parseInt(route.query.page?.toString() || '1'),
-        pageSize: parseInt(route.query.pageSize?.toString() || '2'),
-      }),
+      props: (route) => {
+        const page = parseInt((route.query.page as string) || '1')
+        const pageSize = parseInt((route.query.pageSize as string) || '2')
+        return {
+          page: isNaN(page) ? 1 : page,
+          pageSize: isNaN(pageSize) ? 2 : pageSize,
+        }
+      },
     },
     {
       path: '/event/:id',
@@ -81,6 +86,19 @@ const router = createRouter({
       path: '/students',
       name: 'students',
       component: StudentView,
+    },
+    {
+      path: '/organizes',
+      name: 'organizes',
+      component: OrganizeView,
+      props: (route) => {
+        const page = parseInt((route.query.page as string) || '1')
+        const pageSize = parseInt((route.query.pageSize as string) || '2')
+        return {
+          page: isNaN(page) ? 1 : page,
+          pageSize: isNaN(pageSize) ? 2 : pageSize,
+        }
+      },
     },
     {
       path: '/404/:resource',
