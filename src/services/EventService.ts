@@ -1,4 +1,5 @@
 import axios from 'axios'
+import type { Event as EventType } from '@/types'
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -16,5 +17,10 @@ export default {
 
   getEvent(id: number) {
     return apiClient.get('/events/' + id)
+  },
+  saveEvent(event: EventType) {
+    // Remove id field before posting (let json-server auto-generate)
+    const { id, ...eventData } = event
+    return apiClient.post('/events', eventData)
   },
 }

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { Event } from '@/types'
-import { ref, computed } from 'vue'
+import { type Event as EventType } from '@/types'
+import { ref } from 'vue'
+import EventService from '@/services/EventService'
+import { useRouter } from 'vue-router'
 
-const event = ref<Event>({
+const event = ref<EventType>({
   id: 0,
   category: '',
   title: '',
@@ -14,44 +16,15 @@ const event = ref<Event>({
   organizer: '',
 })
 
-const loading = ref(false)
-const errorMsg = ref<string | null>(null)
-const created = ref<Event | null>(null)
-
-const isValid = computed(
-  () =>
-    event.value.category.trim() &&
-    event.value.title.trim() &&
-    event.value.description.trim() &&
-    event.value.location.trim(),
-)
-
-async function handleSubmit() {
-  errorMsg.value = null
-  created.value = null
-  loading.value = true
-  const res = await fetch('http://localhost:8080/events', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(event.value),
-  })
-  if (!res.ok) {
-    const t = await res.text()
-    throw new Error(`POST /events failed (${res.status}): ${t}`)
-  }
-  created.value = await res.json()
-
-  event.value = {
-    id: 0,
-    category: '',
-    title: '',
-    description: '',
-    location: '',
-    date: '',
-    time: '',
-    petsAllowed: false,
-    organizer: '',
-  }
+const router = useRouter()
+function saveEvent() {
+  EventService.saveEvent(event.value)
+    .then((response) => {
+      router.push({ name: 'event-detail-view', params: { id: response.data.id } })
+    })
+    .catch(() => {
+      router.push({ name: 'network-error-view' })
+    })
 }
 </script>
 
@@ -60,7 +33,7 @@ async function handleSubmit() {
     <div class="card">
       <h1>Create an event</h1>
 
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="saveEvent">
         <label>Category</label>
         <input v-model="event.category" type="text" placeholder="Category" class="field" />
 
@@ -93,19 +66,9 @@ async function handleSubmit() {
         <label>Organizer</label>
         <input v-model="event.organizer" type="text" placeholder="Organizer" class="field" />
 
-        <button class="button -fill-gradient" type="submit" :disabled="!isValid || loading">
-          {{ loading ? 'Submitting...' : 'Submit' }}
-        </button>
-        <button class="button -fill-gray" type="reset" :disabled="loading">Reset</button>
+        <button class="button -fill-gradient" type="submit">Submit</button>
+        <button class="button -fill-gray" type="reset">Reset</button>
       </form>
-
-      <p v-if="errorMsg" class="-text-error">{{ errorMsg }}</p>
-
-      <h3 v-if="created" class="-text-primary">Created:</h3>
-      <pre v-if="created">{{ created }}</pre>
-
-      <!-- debug preview -->
-      <pre>{{ event }}</pre>
     </div>
   </div>
 </template>
