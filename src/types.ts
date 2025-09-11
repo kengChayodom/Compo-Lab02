@@ -22,7 +22,7 @@ export interface Student {
 
 export interface Organization {
   id: number
-  organizationName: string
+  organization_Name: string
   address: string
 }
 

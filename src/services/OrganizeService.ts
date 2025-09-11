@@ -1,7 +1,8 @@
+import type { Organization } from '@/types'
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: false,
   headers: {
     Accept: 'application/json',
@@ -16,5 +17,11 @@ export default {
 
   getOrganize(id: number) {
     return apiClient.get('/organizes/' + id)
+  },
+
+  saveOrganize(organize: Organization) {
+    // Remove id field before posting (let json-server auto-generate)
+    const { id, ...organizeData } = organize
+    return apiClient.post('/organizes', organizeData)
   },
 }

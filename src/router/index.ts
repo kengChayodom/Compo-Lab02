@@ -10,9 +10,12 @@ import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import nProgress from 'nprogress'
 import EventService from '@/services/EventService'
+import OrganizeService from '@/services/OrganizeService'
 import { useEventStore } from '@/stores/event'
 import OrganizeView from '@/views/OrganizeView.vue'
-import AddEventView from '@/views/EventFormView.vue'
+import AddEventView from '@/views/form/EventFormView.vue'
+import OrganizeDetailView from '@/views/organize/OrganizeDetailView.vue'
+import AddOrganizesView from '@/views/form/OrganizeFormView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +91,11 @@ const router = createRouter({
       component: AddEventView,
     },
     {
+      path: '/add-organization',
+      name: 'add-organization',
+      component: AddOrganizesView,
+    },
+    {
       path: '/students',
       name: 'students',
       component: StudentView,
@@ -103,6 +111,32 @@ const router = createRouter({
           page: isNaN(page) ? 1 : page,
           pageSize: isNaN(pageSize) ? 2 : pageSize,
         }
+      },
+    },
+    {
+      path: '/organizes/:id',
+      name: 'organize-detail-view',
+      component: () => OrganizeDetailView,
+      props: true,
+      beforeEnter: (to) => {
+        const id = parseInt(to.params.id as string)
+        // You can add store logic here if needed
+        // const organizeStore = useOrganizeStore()
+        return OrganizeService.getOrganize(id)
+          .then(() => {
+            // Setup the data for organize if you have a store
+            // organizeStore.setOrganize(response.data)
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 404) {
+              return {
+                name: '404-resource-view',
+                params: { resource: 'organize' },
+              }
+            } else {
+              return { name: 'network-error-view' }
+            }
+          })
       },
     },
     {
