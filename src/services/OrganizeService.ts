@@ -21,6 +21,7 @@ export default {
 
   saveOrganize(organize: Organization) {
     // Remove id field before posting (let json-server auto-generate)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...organizeData } = organize
     return apiClient.post('/organizes', organizeData)
   },

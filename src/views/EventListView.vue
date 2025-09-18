@@ -4,6 +4,9 @@ import CategoryInfo from '@/components/CategoryInfo.vue'
 import { type Event } from '@/types'
 import { ref, onMounted, computed, watchEffect } from 'vue'
 import EventService from '@/services/EventService'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const events = ref<Event[] | null>([])
 const totalEvents = ref(0)
@@ -43,6 +46,26 @@ onMounted(() => {
       })
   })
 })
+
+const keyword = ref('')
+function updateKeyword(value: string) {
+  let queryFunction
+  if (keyword.value === '') {
+    queryFunction = EventService.getEvents(3, page.value)
+  } else {
+    queryFunction = EventService.getEventsByKeyword(value, 3, page.value)
+  }
+  queryFunction
+    .then((response) => {
+      events.value = response.data
+      console.log('events', events.value)
+      totalEvents.value = response.headers['x-total-count']
+      console.log('totalEvents', totalEvents.value)
+    })
+    .catch(() => {
+      router.push({ name: 'NetworkError' })
+    })
+}
 </script>
 
 <template>
@@ -63,6 +86,15 @@ onMounted(() => {
 
   <h1 class="text-3xl">Events For Good</h1>
   <div class="flex flex-col items-center">
+    <div>
+      <input
+        v-model="keyword"
+        type="text"
+        placeholder="Search..."
+        @input="(e) => updateKeyword((e.target as HTMLInputElement).value)"
+        class="border rounded px-2 py-1 w-full"
+      />
+    </div>
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <div class="flex w-[290px] justify-between text-blue-700 font-medium">
       <router-link

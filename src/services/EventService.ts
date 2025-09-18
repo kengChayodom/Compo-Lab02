@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { type AxiosResponse } from 'axios'
 import type { Event as EventType } from '@/types'
 
 const apiClient = axios.create({
@@ -20,7 +20,15 @@ export default {
   },
   saveEvent(event: EventType) {
     // Remove id field before posting (let json-server auto-generate)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...eventData } = event
     return apiClient.post('/events', eventData)
+  },
+
+  getEventsByKeyword(keyword: string, perPage: number, page: number) {
+    const q = encodeURIComponent(keyword)
+    return apiClient.get(
+      `/events?title=${q}&description=${q}&organizer=${q}&_limit=${perPage}&_page=${page}`,
+    )
   },
 }

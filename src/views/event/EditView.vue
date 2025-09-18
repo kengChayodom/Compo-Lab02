@@ -9,7 +9,7 @@ const props = defineProps<{
   id: string
 }>()
 
-const { event } = toRefs(props)
+toRefs(props)
 const router = useRouter()
 const store = useMessageStore()
 
