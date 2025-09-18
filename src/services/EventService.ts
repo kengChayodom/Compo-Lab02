@@ -25,10 +25,13 @@ export default {
     return apiClient.post('/events', eventData)
   },
 
-  getEventsByKeyword(keyword: string, perPage: number, page: number) {
-    const q = encodeURIComponent(keyword)
-    return apiClient.get(
-      `/events?title=${q}&description=${q}&organizer=${q}&_limit=${perPage}&_page=${page}`,
-    )
+  getEventsByKeyword(
+    keyword: string,
+    perPage: number,
+    page: number,
+  ): Promise<AxiosResponse<EventType[]>> {
+    const url = `/events?q=${encodeURIComponent(keyword)}&_limit=${perPage}&_page=${page}`
+    console.log('API URL:', url)
+    return apiClient.get<EventType[]>(url)
   },
 }

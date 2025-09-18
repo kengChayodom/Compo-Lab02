@@ -2,7 +2,7 @@
 import EventCard from '@/components/EventCard.vue'
 import CategoryInfo from '@/components/CategoryInfo.vue'
 import { type Event } from '@/types'
-import { ref, onMounted, computed, watchEffect } from 'vue'
+import { ref, onMounted, computed, watchEffect, watch } from 'vue'
 import EventService from '@/services/EventService'
 import { useRouter } from 'vue-router'
 
@@ -12,7 +12,6 @@ const events = ref<Event[] | null>([])
 const totalEvents = ref(0)
 const hasNexPage = computed(() => {
   const totalPages = Math.ceil(totalEvents.value / pageSize.value)
-
   return page.value < totalPages
 })
 
@@ -31,41 +30,60 @@ const pageSizeOption = [2, 3, 4, 6]
 
 const page = computed(() => props.page)
 const pageSize = computed(() => props.pageSize)
-
-onMounted(() => {
-  watchEffect(() => {
-    EventService.getEvents(pageSize.value, page.value)
-      .then((response) => {
-        console.log(response.data)
-
-        events.value = response.data
-        totalEvents.value = response.headers['x-total-count']
-      })
-      .catch((error) => {
-        console.log('There was an error!', error)
-      })
-  })
-})
-
 const keyword = ref('')
+
+// Function to load events (similar to your original)
+function loadEvents() {
+  EventService.getEvents(pageSize.value, page.value)
+    .then((response) => {
+      console.log('Loading normal events:', response.data)
+      events.value = response.data
+      totalEvents.value = response.headers['x-total-count']
+    })
+    .catch((error) => {
+      console.log('There was an error!', error)
+    })
+}
+
+// Your original updateKeyword function with fixes
 function updateKeyword(value: string) {
+  keyword.value = value // Make sure to update the ref
   let queryFunction
-  if (keyword.value === '') {
-    queryFunction = EventService.getEvents(3, page.value)
+
+  if (value.trim() === '') {
+    // Load all events when search is empty
+    queryFunction = EventService.getEvents(pageSize.value, page.value)
   } else {
-    queryFunction = EventService.getEventsByKeyword(value, 3, page.value)
+    // Search with keyword
+    queryFunction = EventService.getEventsByKeyword(value, pageSize.value, page.value)
   }
+
   queryFunction
     .then((response) => {
+      console.log('Search results:', response.data)
       events.value = response.data
-      console.log('events', events.value)
       totalEvents.value = response.headers['x-total-count']
-      console.log('totalEvents', totalEvents.value)
     })
-    .catch(() => {
+    .catch((error) => {
+      console.log('Search error:', error)
       router.push({ name: 'NetworkError' })
     })
 }
+
+// Load initial events
+onMounted(() => {
+  loadEvents()
+})
+
+// Watch for page/pageSize changes (when not searching)
+watch([page, pageSize], () => {
+  if (keyword.value.trim() === '') {
+    loadEvents()
+  } else {
+    // If we have a keyword, search again with new pagination
+    updateKeyword(keyword.value)
+  }
+})
 </script>
 
 <template>
