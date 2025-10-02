@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { type Organization } from '@/types'
+import { type Organizer } from '@/types'
 import { ref } from 'vue'
-import OrganizeService from '@/services/OrganizeService'
+import OrganizeService from '@/services/OrganizerService'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message'
+import BaseInput from '@/components/BaseInput.vue'
+import ImageUpload from '@/components/ImageUpload.vue'
 
-const organize = ref<Organization>({
+const organizer = ref<Organizer>({
   id: 0,
-  organization_Name: '',
-  address: '',
+  name: '',
+  images: [],
 })
 
 const router = useRouter()
 const store = useMessageStore()
 
-function saveOrganize() {
-  OrganizeService.saveOrganize(organize.value)
+function saveOrganizer() {
+  OrganizeService.saveOrganizer(organizer.value)
     .then((response) => {
-      router.push({ name: 'organize-detail-view', params: { id: response.data.id } })
-      store.updateMessage(
-        'You have successfully added a new organize: ' + response.data.organization_Name,
-      )
+      router.push({ name: 'organizers-detail-view', params: { id: response.data.id } })
+      store.updateMessage('You have successfully added a new organizer: ' + response.data.name)
       setTimeout(() => {
         store.resetMessage()
       }, 3000)
@@ -36,30 +36,17 @@ function saveOrganize() {
     <div class="card">
       <h1>Create an Organize</h1>
 
-      <form @submit.prevent="saveOrganize">
+      <form @submit.prevent="saveOrganizer">
         <h3>Organize Information</h3>
 
         <label>Organize Name</label>
-        <input
-          v-model="organize.organization_Name"
-          type="text"
-          placeholder="Enter organize name"
-          class="field"
-          required
-        />
+        <BaseInput v-model="organizer.name" type="text" label="Name" class="field" />
 
-        <label>Address</label>
-        <textarea
-          v-model="organize.address"
-          placeholder="Enter organize address"
-          class="field"
-          rows="3"
-          required
-        ></textarea>
+        <h3>The image of the Organizer</h3>
+        <ImageUpload v-model="organizer.images" />
 
         <div class="button-group">
           <button class="button -fill-gradient" type="submit">Create Organize</button>
-          <button class="button -fill-gray" type="reset">Reset</button>
         </div>
       </form>
     </div>

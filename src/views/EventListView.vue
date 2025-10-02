@@ -2,7 +2,7 @@
 import EventCard from '@/components/EventCard.vue'
 import CategoryInfo from '@/components/CategoryInfo.vue'
 import { type Event } from '@/types'
-import { ref, onMounted, computed, watchEffect, watch } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import EventService from '@/services/EventService'
 import { useRouter } from 'vue-router'
 

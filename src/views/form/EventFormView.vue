@@ -1,11 +1,26 @@
 <script setup lang="ts">
-import { type Event as EventType } from '@/types'
-import { ref } from 'vue'
+import type { Event, Organizer } from '@/types'
+import { onMounted, ref } from 'vue'
 import EventService from '@/services/EventService'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message'
+import BaseInput from '@/components/BaseInput.vue'
+import OrganizerService from '@/services/OrganizerService'
+import BaseSelect from '@/components/BaseSelect.vue'
+import ImageUpload from '@/components/ImageUpload.vue'
 
-const event = ref<EventType>({
+const organizers = ref<Organizer[]>([])
+onMounted(() => {
+  OrganizerService.getOrganizers()
+    .then((response) => {
+      console.log(response.data)
+      organizers.value = response.data
+    })
+    .catch(() => {
+      router.push({ name: 'network-error-view' })
+    })
+})
+const event = ref<Event>({
   id: 0,
   category: '',
   title: '',
@@ -13,8 +28,13 @@ const event = ref<EventType>({
   location: '',
   date: '',
   time: '',
-  petsAllowed: false, // << สำคัญ: ให้ตรงกับ backend
-  organizer: '',
+  petAllowed: false, // << สำคัญ: ให้ตรงกับ backend
+  organizer: {
+    id: 0,
+    name: '',
+    images: [],
+  },
+  images: [],
 })
 
 const router = useRouter()
@@ -38,42 +58,42 @@ function saveEvent() {
   <div class="page">
     <div class="card">
       <h1>Create an event</h1>
-
       <form @submit.prevent="saveEvent">
-        <label>Category</label>
-        <input v-model="event.category" type="text" placeholder="Category" class="field" />
+        <BaseInput v-model="event.category" label="Category" type="text" class="field" />
 
         <h3>Name &amp; describe your event</h3>
 
-        <label>Title</label>
-        <input v-model="event.title" type="text" placeholder="Title" class="field" />
+        <BaseInput v-model="event.title" type="text" label="Title" class="field" />
 
         <label>Description</label>
-        <input v-model="event.description" type="text" placeholder="Description" class="field" />
+        <BaseInput v-model="event.description" type="text" label="Description" class="field" />
 
         <h3>Where is your event?</h3>
 
         <label>Location</label>
-        <input v-model="event.location" type="text" placeholder="Location" class="field" />
+        <BaseInput v-model="event.location" type="text" label="Location" class="field" />
 
         <h3>When is your event?</h3>
 
         <label>Date</label>
-        <input v-model="event.date" type="text" placeholder="e.g. 1st Jan" class="field" />
+        <BaseInput v-model="event.date" type="text" label="e.g. 1st Jan" class="field" />
 
         <label>Time</label>
-        <input v-model="event.time" type="text" placeholder="e.g. 12.00 pm." class="field" />
+        <BaseInput v-model="event.time" type="text" label="e.g. 12.00 pm." class="field" />
 
         <label>
-          <input v-model="event.petsAllowed" type="checkbox" />
+          <BaseInput v-model="event.petAllowed" type="checkbox" label="Pet allowed" />
           Pet allowed
         </label>
 
-        <label>Organizer</label>
-        <input v-model="event.organizer" type="text" placeholder="Organizer" class="field" />
+        <h3>Who is your Organizer?</h3>
+
+        <BaseSelect v-model="event.organizer.id" :options="organizers" label="Organizer" />
+
+        <h3>The image of the Event</h3>
+        <ImageUpload v-model="event.images" />
 
         <button class="button -fill-gradient" type="submit">Submit</button>
-        <button class="button -fill-gray" type="reset">Reset</button>
       </form>
     </div>
   </div>

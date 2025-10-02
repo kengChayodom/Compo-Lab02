@@ -10,7 +10,7 @@ import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import nProgress from 'nprogress'
 import EventService from '@/services/EventService'
-import OrganizeService from '@/services/OrganizeService'
+import OrganizeService from '@/services/OrganizerService'
 import { useEventStore } from '@/stores/event'
 import OrganizeView from '@/views/OrganizeView.vue'
 import AddEventView from '@/views/form/EventFormView.vue'
@@ -101,8 +101,8 @@ const router = createRouter({
       component: StudentView,
     },
     {
-      path: '/organizes',
-      name: 'organizes',
+      path: '/organizers',
+      name: 'organizers',
       component: OrganizeView,
       props: (route) => {
         const page = parseInt((route.query.page as string) || '1')
@@ -114,15 +114,15 @@ const router = createRouter({
       },
     },
     {
-      path: '/organizes/:id',
-      name: 'organize-detail-view',
+      path: '/organizers/:id',
+      name: 'organizers-detail-view',
       component: () => OrganizeDetailView,
       props: true,
       beforeEnter: (to) => {
         const id = parseInt(to.params.id as string)
         // You can add store logic here if needed
         // const organizeStore = useOrganizeStore()
-        return OrganizeService.getOrganize(id)
+        return OrganizeService.getOrganizer(id)
           .then(() => {
             // Setup the data for organize if you have a store
             // organizeStore.setOrganize(response.data)
@@ -131,7 +131,7 @@ const router = createRouter({
             if (error.response && error.response.status === 404) {
               return {
                 name: '404-resource-view',
-                params: { resource: 'organize' },
+                params: { resource: 'organizers' },
               }
             } else {
               return { name: 'network-error-view' }
