@@ -16,6 +16,7 @@ import OrganizeView from '@/views/OrganizeView.vue'
 import AddEventView from '@/views/form/EventFormView.vue'
 import OrganizeDetailView from '@/views/organize/OrganizeDetailView.vue'
 import AddOrganizesView from '@/views/form/OrganizeFormView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -144,6 +145,11 @@ const router = createRouter({
       name: '404-resource-view',
       component: NotFoundView,
       props: true,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
     },
     {
       path: '/:catchAll(.*)',
