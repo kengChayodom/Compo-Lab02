@@ -11,6 +11,7 @@ const organizer = ref<Organizer>({
   id: 0,
   name: '',
   images: [],
+  roles: [],
 })
 
 const router = useRouter()

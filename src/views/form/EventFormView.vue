@@ -33,6 +33,7 @@ const event = ref<Event>({
     id: 0,
     name: '',
     images: [],
+    roles: [],
   },
   images: [],
 })

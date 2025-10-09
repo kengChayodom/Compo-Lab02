@@ -17,13 +17,14 @@ import AddEventView from '@/views/form/EventFormView.vue'
 import OrganizeDetailView from '@/views/organize/OrganizeDetailView.vue'
 import AddOrganizesView from '@/views/form/OrganizeFormView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
+import RegisterView from '@/views/auth/RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'event-list-view',
       component: EventListView,
       props: (route) => {
         const page = parseInt((route.query.page as string) || '1')
@@ -150,6 +151,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
     },
     {
       path: '/:catchAll(.*)',

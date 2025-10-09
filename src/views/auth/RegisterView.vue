@@ -11,6 +11,8 @@ import { useMessageStore } from '@/stores/message'
 const messageStore = useMessageStore()
 const router = useRouter()
 const validationSchema = yup.object({
+  firstname: yup.string().required('The first name is required'),
+  lastname: yup.string().required('The last name is required'),
   email: yup.string().required('The email is required'),
   password: yup.string().required('The password is required'),
 })
@@ -18,22 +20,26 @@ const validationSchema = yup.object({
 const { errors, handleSubmit } = useForm({
   validationSchema,
   initialValues: {
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
   },
 })
 
+const { value: firstname } = useField<string>('firstname')
+const { value: lastname } = useField<string>('lastname')
 const { value: email } = useField<string>('email')
 const { value: password } = useField<string>('password')
 const onSubmit = handleSubmit((values) => {
   authStore
-    .login(values.email, values.password)
+    .register(values.firstname, values.lastname, values.email, values.password)
     .then(() => {
-      console.log('Login successful')
-      router.push({ name: 'event-list-view' })
+      console.log('Registration successful')
+      router.push({ name: 'login' })
     })
     .catch((err) => {
-      messageStore.updateMessage('could not login')
+      messageStore.updateMessage('could not register')
       setTimeout(() => {
         messageStore.resetMessage()
       }, 3000)
@@ -52,13 +58,38 @@ const onSubmit = handleSubmit((values) => {
         alt="Your Company"
       />
       <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        Sign in to your account
+        Sign Up for your account
       </h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <form class="space-y-6" @submit.prevent="onSubmit">
         <!-- Email -->
+        <div>
+          <label for="firstname" class="block text-sm font-medium leading-6 text-gray-900">
+            First Name
+          </label>
+          <InputText
+            type="text"
+            id="firstname"
+            v-model="firstname"
+            placeholder="First Name"
+            :error="errors['firstname']"
+          />
+        </div>
+        <div>
+          <label for="lastname" class="block text-sm font-medium leading-6 text-gray-900">
+            Last Name
+          </label>
+          <InputText
+            type="text"
+            id="lastname"
+            v-model="lastname"
+            placeholder="Last Name"
+            :error="errors['lastname']"
+          />
+        </div>
+
         <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">
             Email address
@@ -99,16 +130,16 @@ const onSubmit = handleSubmit((values) => {
             type="submit"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Sign in
+            Sign Up
           </button>
         </div>
       </form>
 
       <!-- Register link -->
       <p class="mt-10 text-center text-sm text-gray-500">
-        Not a member?
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-          Try to register here
+        member?
+        <a href="/login" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+          Try to Login here
         </a>
       </p>
     </div>

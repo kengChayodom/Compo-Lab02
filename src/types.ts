@@ -25,6 +25,7 @@ export interface Organizer {
   id: number
   name: string
   images: string[]
+  roles: string[]
 }
 
 export interface MessageState {

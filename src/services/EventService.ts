@@ -1,14 +1,6 @@
-import axios, { type AxiosResponse } from 'axios'
 import type { Event as EventType } from '@/types'
-
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
-  withCredentials: false,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-})
+import apiClient from './AxiosCLient'
+import type { AxiosResponse } from 'axios'
 
 export default {
   getEvents(perPage: number, page: number) {
